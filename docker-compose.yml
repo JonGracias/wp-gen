@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  apache:
+    build: .
+    container_name: wp_gen_apache
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./wp-gen:/app
+    depends_on:
+      - db
+    environment:
+      MYSQL_DATABASE: wp_gen
+      MYSQL_USER: Admin
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+
+  db:
+    image: mysql:8.0.39
+    container_name: wp_gen_db
+    environment:
+      MYSQL_DATABASE: wp_gen
+      MYSQL_USER: Admin
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "8081:80"
