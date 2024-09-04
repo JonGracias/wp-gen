@@ -12,20 +12,24 @@ function configure_wordpress.configureWordpress(globals)
     local site_url = globals.site_url
 
     utils.log("Creating wp_content")
-    if not utils.doesDirectoryExist(wp_content) then
+    if not utils.doesDirectoryExist(wp_content .. '/wp-content') then
         -- Create the wp-content directory and move contents
         utils.exec_command(string.format("sudo mkdir -p %s", wp_content),
             nil, 'Error: configure_wordpress.configureWordpress(globals)')
 
         set_permissions.setAllPermissions(wp_content)
 
-        utils.exec_command(string.format("sudo mv %s/wp-content %s/", wp_base, wp_content),
+        local move_wp_content = string.format("sudo mv %s/wp-content %s/", wp_base, wp_content)
+        print('Move wp content: ' ..  move_wp_content)
+        utils.exec_command(move_wp_content,
             nil, 'Error: configure_wordpress.configureWordpress(globals)')
     end
     
     utils.log("Creating symlink")
     -- Create or recreate the symlink
-    utils.exec_command(string.format("sudo ln -sf %s/wp-content %s/wp-content", wp_content, wp_base),
+    local create_symlink = string.format("sudo ln -sf %s/wp-content %s/wp-content", wp_content, wp_base)
+    print('create symling: ' ..  create_symlink)
+    utils.exec_command(create_symlink,
         nil, 'Error: configure_wordpress.configureWordpress(globals)')
     -- Validate the symlink
     utils.validateSymlink(string.format("%s/wp-content", wp_base), string.format("%s/wp-content", wp_content))

@@ -4,13 +4,21 @@ local utils = require("utils")
 function download_wordpress.downloadAndInstall(globals)
     local project_name = globals.project_name
     local wp_base = globals.wp_base
+    print("wp base " .. wp_base)
     local wp_config = globals.wp_config
+    local etc_config = globals.etc_config
     local wp_latest_url = "https://wordpress.org/latest.tar.gz"
 
+    local create_html = "sudo mkdir " .. wp_base
+    if not utils.doesDirectoryExist(wp_base) then
+        utils.exec_command(create_html, "Creating " .. wp_base, "Error creating /var/www/html")
+    end
+
     -- Check if WordPress is already installed  
-    if utils.doesDirectoryExist(wp_base) then
+    if utils.doesDirectoryExist(wp_base .. '/wp-admin') then
         utils.log(string.format("WordPress is already installed at %s.", wp_base))
     else
+
         -- Download the latest WordPress archive
         utils.log("Downloading WordPress")
         local downloadCommand = string.format("wget -O /tmp/latest.tar.gz %s > /dev/null 2>&1", wp_latest_url)
@@ -23,7 +31,7 @@ function download_wordpress.downloadAndInstall(globals)
 
         -- Move the extracted WordPress files to the project directory
         utils.log(string.format("Moving WordPress to %s", wp_base))
-        local moveCommand = string.format("sudo mv /var/www/wordpress %s", wp_base)
+        local moveCommand = string.format("sudo mv /var/www/wordpress/* %s", wp_base)
         utils.exec_command(moveCommand, nil, 'Error: download_wordpress')
 
         -- Remove the downloaded archive
@@ -41,9 +49,9 @@ function download_wordpress.downloadAndInstall(globals)
  ***/
 
 /* Look up a host-specific config file in
- * /etc/wordpress/config-%s.php or /etc/wordpress/config-<domain>.php
+ * %s or /etc/wordpress/config-<domain>.php
  */
-$debian_file = '/etc/wordpress/config-%s.php';
+$debian_file = '%s';
 
 if (file_exists($debian_file)) {
     require_once($debian_file);
@@ -87,7 +95,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 require_once(ABSPATH . 'wp-settings.php');
 define('FS_METHOD', 'direct');
 ?>
-]], project_name, project_name)
+]], etc_config, etc_config)
     utils.create_file(wp_config_content, wp_config)
 
     -- Setting permissions

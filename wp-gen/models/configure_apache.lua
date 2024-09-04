@@ -29,8 +29,9 @@ Alias /%s %s
 ErrorLog ${APACHE_LOG_DIR}/error.log
 CustomLog ${APACHE_LOG_DIR}/access.log combined
 ]], project_name, wp_install_dir, wp_install_dir, wp_content_dir)
+    
+    -- Create content file
     utils.create_file(apache_content, apache_config)
-
     -- Enable the site and reload Apache
     local enableSiteCommand = string.format("a2ensite %s.conf", project_name)
     local reloadApacheCommand = "systemctl reload apache2"

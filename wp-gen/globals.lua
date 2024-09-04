@@ -31,11 +31,11 @@ end
 function globals.init(project_name, script_path)
     globals.project_name = project_name
     globals.db_name = format_db_name(project_name)
-    globals.base_url = 'https://dev.datakiin'
+    globals.base_url = 'https://datakiin'
     globals.site_url = string.format("%s/%s", globals.base_url, project_name)
     
     -- Parse the .my.cnf file for MySQL credentials
-    local cnf_path = string.format("/home/datakiin/.my.cnf",script_path)  -- Adjust this path as necessary
+    local cnf_path = "/home/datakiin/.my.cnf"  -- Adjust this path as necessary
     local cnf = parseMyCnf(cnf_path)
     
     globals.db_user = cnf["user"]

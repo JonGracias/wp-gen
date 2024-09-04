@@ -43,6 +43,24 @@ function M.log_error(message)
     os.exit(1)
 end
 
+-- Function to check if a group exists
+function M.group_exists(group)
+    local check_group_command = string.format("getent group %s", group)
+    local handle = io.popen(check_group_command)
+    local result = handle:read("*a")
+    local success, _, _ = handle:close()
+    return success and result:find(group) ~= nil
+end
+
+-- Function to check if a user is in a group
+function M.user_in_group(user, group)
+    local check_user_command = string.format("groups %s", user)
+    local handle = io.popen(check_user_command)
+    local result = handle:read("*a")
+    local success, _, _ = handle:close()
+    return success and result:find(group) ~= nil
+end
+
 -- Function to execute shell commands and capture the output
 function M.exec_command(command, success_msg, error_msg)
     local handle = io.popen(command)
@@ -71,6 +89,11 @@ function M.create_file(content, path)
     if M.doesFileExist(path) then
         M.log(string.format("File '%s' already exists.",path))
     else
+        -- Ensure the directory exists
+        local dir = path:match("(.*/)")
+        local create_directory_command = string.format("sudo mkdir -p %s", dir)
+        M.exec_command(create_directory_command, "Directory created.", "Error creating directory: ")
+
         -- Save the content to the config file
         M.log(string.format("Creating %s",path), true)
         local temp_config_path = "/tmp/config_temp.php"
@@ -83,7 +106,6 @@ function M.create_file(content, path)
             local success = string.format("Succesfully created %s.", path)
             local error = string.format("Error creating %s: ", path)
             M.exec_command(command, success, error)
-
         else
             M.log_error(string.format("%s Does not exist utils.lua:62", temp_config_path))
         end
@@ -159,22 +181,26 @@ end
 
 -- Function to check if MySQL user exists
 function M.create_user(username, password)
-    local checkUserCommand = string.format("sudo mysql -e \"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '%s');\"", username)
+    local checkUserCommand = string.format("sudo mysql -e \"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '%s')\"", username)
     local handle = io.popen(checkUserCommand)
     local result = handle:read("*a")
     local success, _, _ = handle:close()
-    if success and result:find("1") then
-        local user = result:find("1") ~= nil
+
+    -- Check if the user exists by looking for '1' in the result
+    local user_exists = result:match("0") == nil
+
+    if success and user_exists then
         M.log(string.format("User '%s' already exists. Skipping user creation.", username))
     else
         -- Create the database user with the provided password
         local createUser = string.format("CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';", username, password)
         local createUserCommand = string.format("sudo mysql -e \"%s\"", createUser)
         local success_msg = string.format("%s user created successfully", username)
-        local error_msg = string.format("%s user could not be created: ", username)
+        local error_msg = string.format("%s user could not be created", username)
         M.exec_command(createUserCommand, success_msg, error_msg)
     end
 end
+
 
 -- Function to check if the database exists using MySQL command
 function M.database_exists(db_name)
