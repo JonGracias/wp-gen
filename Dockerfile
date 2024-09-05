@@ -1,55 +1,38 @@
-FROM ubuntu:latest
+# Use an official Ubuntu base image
+FROM ubuntu:22.04
 
-# Set environment variables to suppress interactive prompts
+# Set non-interactive mode for apt to prevent prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    apache2 \
-    php8.1 \
-    wget \
-    lua5.3 \
-    python3.10 \
-    mysql-server \
-    dbconfig-common \
-    && apt-get clean
+# Update the package list and install required packages
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-curl php-json php-mbstring php-xml php-zip \
+    python3-pip wget curl lua5.4 sudo
 
-# Preconfigure phpMyAdmin to use apache2 and auto-configure the database
-RUN echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections && \
-    echo "phpmyadmin phpmyadmin/app-password-confirm password password" | debconf-set-selections && \
-    echo "phpmyadmin phpmyadmin/mysql/admin-pass password password" | debconf-set-selections && \
-    echo "phpmyadmin phpmyadmin/mysql/app-pass password password" | debconf-set-selections && \
-    echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
+# Run the mkdir command as root to create the /etc/wp-gen/ directory
+RUN mkdir /etc/wp-gen/
 
-# Install phpMyAdmin
-RUN apt-get install -y phpmyadmin && apt-get clean
+# Add a non-root user (datakiin) and grant sudo without a password
+RUN groupadd -r datakiin && useradd -r -g datakiin datakiin && \
+    echo 'datakiin ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Create the 'admin' user with passwordless sudo
-RUN useradd -m admin && \
-    echo 'admin ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+# Change ownership of Apache log directory so the datakiin user can write logs
+RUN chown -R datakiin:datakiin /var/log/apache2/
 
-# Create the 'webmasters' group and add 'admin' and 'www-data' to it
-RUN groupadd webmasters && \
-    usermod -aG webmasters admin && \
-    usermod -aG webmasters www-data
 
-# Unpack the tarball
-COPY base-image-conf/_files_backup.tar.gz /tmp/
-RUN tar -xvzf /tmp/_files_backup.tar.gz -C /
+# Copy wp-gen to the /app directory
+COPY ./wp-gen/ /app/
 
-# Add the .my.cnf file to the appropriate location
-COPY .my.cnf /root/.my.cnf
+# Install MySQL, configure it to run without a password
+RUN echo "mysql-server mysql-server/root_password password ''" | sudo debconf-set-selections && \
+echo "mysql-server mysql-server/root_password_again password ''" | sudo debconf-set-selections && \
+sudo apt-get install -y mysql-server
 
-# Set up MySQL root login via unix_socket
-RUN service mysql start && \
-    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'auth_socket';" && \
-    mysql -u root -e "FLUSH PRIVILEGES;"
+# Enable Apache modules for SSL and PHP 8.1
+RUN sudo a2enmod ssl && sudo a2enmod php8.1
 
-# Add alias to the admin user's .bashrc
-RUN echo "alias wp-gen='sudo lua /home/admin/wordpress/main.lua'" >> /home/admin/.bashrc
-
-# Expose necessary ports
+# Expose port 80 for HTTP and 443 for HTTPS
 EXPOSE 80 443
 
-# Start services (Apache, MySQL)
-CMD ["sh", "-c", "service apache2 start && service mysql start && tail -f /var/log/apache2/access.log"]
+# Start MySQL and Apache services using apachectl
+CMD ["apachectl", "-D", "FOREGROUND"]
