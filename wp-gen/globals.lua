@@ -35,7 +35,7 @@ function globals.init(project_name, script_path)
     globals.site_url = string.format("%s/%s", globals.base_url, project_name)
     
     -- Parse the .my.cnf file for MySQL credentials
-    local cnf_path = "/home/datakiin/.my.cnf"  -- Adjust this path as necessary
+    local cnf_path = "./config/.my.cnf"  -- Adjust this path as necessary
     local cnf = parseMyCnf(cnf_path)
     
     globals.db_user = cnf["user"]

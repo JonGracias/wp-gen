@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    container_name: wordpress_apache
+    ports:
+      - "80:80"
+      - "8443:443"
+    volumes:
+      - /home/datakiin/wp-gen/wp-gen:/home/datakiin/wp-gen
+      - /etc/hosts:/etc/hosts
+      - /etc/wordpress/config-localhost.php:/etc/wordpress/config-localhost.php
+      - /var/www/html:/var/www/html
+      - /var/lib/projects/html:/var/lib/projects/html
+      - /etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - /etc/apache2/sites-available/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      - /var/www/html/wp-config.php:/var/www/html/wp-config.php
+    networks:
+      - wp-network
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    container_name: wordpress_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: Admin
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: html
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./html_database_dump.sql:/docker-entrypoint-initdb.d/html_database_dump.sql
+      - ./create_user.sql:/docker-entrypoint-initdb.d/create_user.sql
+    networks:
+      - wp-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: wordpress_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - "8080:80"
+    networks:
+      - wp-network
+
+volumes:
+  db_data:
+    name: wpdb
+
+networks:
+  wp-network:
+    driver: bridge
