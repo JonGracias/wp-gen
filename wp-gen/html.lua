@@ -28,7 +28,7 @@ function html.init(script_path)
     html.site_url = 'https://datakiin'
     
     -- Parse the .my.cnf file for MySQL credentials
-    local cnf_path = "./config/.my.cnf"
+    local cnf_path = "config/.my.cnf"
     local cnf = parseMyCnf(cnf_path)
     
     html.db_user = cnf["user"]

@@ -4,7 +4,7 @@ local function get_script_path()
     local str = debug.getinfo(2, "S").source:sub(2)
     return str:match("(.*/)")
 end
-local script_path = get_script_path()
+local script_path = '/home/datakiin/wp-gen/'
 package.path = package.path .. ";" .. script_path .. "?.lua"
 
 -- Load the required modules
@@ -19,7 +19,7 @@ local new_apache_wordpress = require("models.apache_wordpress")
 
 -- Commands to execute if checks pass
 local create_webmasters = "sudo groupadd webmasters"
-local add_current_user_to_webmasters = "sudo usermod -aG webmasters $USER"
+local add_current_user_to_webmasters = "sudo usermod -aG webmasters datakiin"
 local add_www_data_to_webmasters = "sudo usermod -aG webmasters www-data"
 
 -- Check if group 'webmasters' exists

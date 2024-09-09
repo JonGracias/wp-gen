@@ -34,13 +34,14 @@ function globals.init(project_name, script_path)
     globals.base_url = 'https://datakiin'
     globals.site_url = string.format("%s/%s", globals.base_url, project_name)
     
-    -- Parse the .my.cnf file for MySQL credentials
-    local cnf_path = "./config/.my.cnf"  -- Adjust this path as necessary
+    -- Parse the .my.cnf file for database credentials
+    local cnf_path = "/home/datakiin/wp-gen/config/wp-gen.cnf"  -- Adjust this path as necessary
     local cnf = parseMyCnf(cnf_path)
-    
     globals.db_user = cnf["user"]
     globals.db_password = cnf["password"]
-    globals.creator_dir = script_path 
+    globals.db_host = cnf["host"]
+    globals.creator_dir = script_path
+    globals.mysql_conn = string.format("mysql -h %s -u %s -p%s", db_host, db_user, db_password)
     
     -- Define paths
     globals.wp_base = string.format("/var/www/%s", project_name)

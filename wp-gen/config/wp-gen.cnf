@@ -1,3 +1,4 @@
 [client]
 user = Admin
 password = password
+host = 172.19.0.2

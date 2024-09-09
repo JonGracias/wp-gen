@@ -6,7 +6,7 @@ services:
     container_name: wordpress_apache
     ports:
       - "80:80"
-      - "8443:443"
+      - "443:443"
     volumes:
       - /home/datakiin/wp-gen/wp-gen:/home/datakiin/wp-gen
       - /etc/hosts:/etc/hosts
