@@ -3,7 +3,7 @@ local M = {}
 function M.start(globals)
     -- Load additional modules
     local wp_base = globals.wp_base
-    local setup_database = require("models.setup_database")
+    local setup_database = require("models.database")
     local configure_wordpress = require("models.configure_wordpress")
     local configure_apache = require("models.configure_apache")
     local download_wordpress = require("models.download_wordpress")

@@ -9,7 +9,7 @@ function download_wordpress.downloadAndInstall(globals)
     local etc_config = globals.etc_config
     local wp_latest_url = "https://wordpress.org/latest.tar.gz"
 
-    local create_html = "sudo mkdir " .. wp_base
+    local create_html = "mkdir " .. wp_base
     if not utils.doesDirectoryExist(wp_base) then
         utils.exec_command(create_html, "Creating " .. wp_base, "Error creating /var/www/html")
     end
@@ -26,12 +26,12 @@ function download_wordpress.downloadAndInstall(globals)
 
         -- Extract the archive to the desired location
         utils.log("Extracting WordPress")
-        local extractCommand = string.format("sudo tar -xzvf /tmp/latest.tar.gz -C /var/www/ > /dev/null 2>&1")
+        local extractCommand = string.format("tar -xzvf /tmp/latest.tar.gz -C /var/www/ > /dev/null 2>&1")
         utils.exec_command(extractCommand, nil, 'Error: download_wordpress')
 
         -- Move the extracted WordPress files to the project directory
         utils.log(string.format("Moving WordPress to %s", wp_base))
-        local moveCommand = string.format("sudo mv /var/www/wordpress/* %s", wp_base)
+        local moveCommand = string.format("mv /var/www/wordpress/* %s", wp_base)
         utils.exec_command(moveCommand, nil, 'Error: download_wordpress')
 
         -- Remove the downloaded archive
@@ -99,8 +99,8 @@ define('FS_METHOD', 'direct');
     utils.create_file(wp_config_content, wp_config)
 
     -- Setting permissions
-    local set_permissions = require("models.set_permissions")
-    set_permissions.setAllPermissions(wp_base)
+    local permissions = require("permissions")
+    permissions.setAllPermissions(wp_base)
 
     return true
 end

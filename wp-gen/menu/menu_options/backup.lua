@@ -1,9 +1,10 @@
 local M = {}
 local utils = require("utils")
+local db = require("models.database")
 
 local function create_backups_table_if_not_exists()
     -- Ensure the backup_records_db exists
-    utils.create_database("backup_records_db")
+    db.create_database("backup_records_db")
     -- SQL command to create or update the backups table with a comment column
     local sql_command = 
         [[

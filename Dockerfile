@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update the package list and install required packages
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-curl php-json php-mbstring php-xml php-zip \
-    python3-pip wget curl lua5.4 sudo
+    python3-pip wget curl lua5.4 sudo nano
 
 # Create the non-root user and add it to the webmasters group
 RUN groupadd -r webmasters && \

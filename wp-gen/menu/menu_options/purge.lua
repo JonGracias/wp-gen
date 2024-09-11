@@ -26,10 +26,10 @@ function M.start(globals)
     local result = handle:read("*a"):gsub("\n", " "):gsub("%s+", " "):sub(1, 200)
     local exec_success, _, code = handle:close()
 
-
-    -- Reload Apache configuration
-    utils.log("Reloading Apache configuration...")
-    utils.exec_command("systemctl reload apache2", nil, 'Error: purge.lua')
+    -- NO SYSTEMCTL RELOAD DOCKER INSTEAD
+    -- -- Reload Apache configuration
+    -- utils.log("Reloading Apache configuration...")
+    -- utils.exec_command("systemctl reload apache2", nil, 'Error: purge.lua')
 
     -- Remove directories and files
     utils.log("Removing directories and files")

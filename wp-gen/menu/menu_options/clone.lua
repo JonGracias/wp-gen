@@ -25,7 +25,7 @@ end
 local function duplicate_files(paths, old_project_name, new_project_name)
     for _, path in pairs(paths) do
         local new_path = path:gsub(old_project_name, new_project_name)
-        local copy_command = string.format("sudo cp -r %s %s", path, new_path)
+        local copy_command = string.format("cp -r %s %s", path, new_path)
         utils.exec_command(copy_command, nil, 'Error: duplicate_files(paths, old_project_name, new_project_name)')
     end
     return true

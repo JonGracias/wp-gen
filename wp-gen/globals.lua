@@ -1,25 +1,5 @@
 local globals = {}
 
--- Function to parse the .my.cnf file
-local function parseMyCnf(file_path)
-    local config = {}
-    local file = io.open(file_path, "r")
-
-    if not file then
-        print("Error: Could not open .my.cnf file.")
-        os.exit(1)
-    end
-
-    for line in file:lines() do
-        local key, value = line:match("^(%w+)%s*=%s*(.+)$")
-        if key and value then
-            config[key] = value
-        end
-    end
-    
-    file:close()
-    return config
-end
 
 local function format_db_name(project_name)
     -- Remove non-alphanumeric characters and convert to lowercase
@@ -31,18 +11,17 @@ end
 function globals.init(project_name, script_path)
     globals.project_name = project_name
     globals.db_name = format_db_name(project_name)
-    globals.base_url = 'https://datakiin'
+    globals.base_url = 'http://localhost'
     globals.site_url = string.format("%s/%s", globals.base_url, project_name)
+    globals.creator_dir = script_path
     
     -- Parse the .my.cnf file for database credentials
-    local cnf_path = "/home/datakiin/wp-gen/config/wp-gen.cnf"  -- Adjust this path as necessary
-    local cnf = parseMyCnf(cnf_path)
-    globals.db_user = cnf["user"]
-    globals.db_password = cnf["password"]
-    globals.db_host = cnf["host"]
-    globals.creator_dir = script_path
-    globals.mysql_conn = string.format("mysql -h %s -u %s -p%s", db_host, db_user, db_password)
-    
+    -- It is neccessary to specify a host for phpmyadmin login
+    globals.db_user = "root"
+    globals.db_password = "password" 
+    globals.db_host = "mysql"
+    globals.db_conn = string.format("mysql -h %s -u %s -p%s", db_host, db_user, db_password)
+
     -- Define paths
     globals.wp_base = string.format("/var/www/%s", project_name)
     globals.wp_content = string.format("/var/lib/projects/%s", project_name)

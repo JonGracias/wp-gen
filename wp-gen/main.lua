@@ -4,44 +4,41 @@ local function get_script_path()
     local str = debug.getinfo(2, "S").source:sub(2)
     return str:match("(.*/)")
 end
-local script_path = '/home/datakiin/wp-gen/'
+local script_path = './wp-gen/'
 package.path = package.path .. ";" .. script_path .. "?.lua"
 
 -- Load the required modules
 local child = require("globals")
-local html = require("html")
 local utils = require("utils")
 local globals = {}
 local new_apache_wordpress = require("models.apache_wordpress")
-
-
 ----- Ensure webmasters -----
 
--- Commands to execute if checks pass
-local create_webmasters = "sudo groupadd webmasters"
-local add_current_user_to_webmasters = "sudo usermod -aG webmasters datakiin"
-local add_www_data_to_webmasters = "sudo usermod -aG webmasters www-data"
+-- -- Commands to execute if checks pass
+-- local create_webmasters = "groupadd webmasters"
+-- local add_current_user_to_webmasters = "usermod -aG webmasters datakiin"
+-- local add_www_data_to_webmasters = "usermod -aG webmasters www-data"
 
--- Check if group 'webmasters' exists
-if not utils.group_exists("webmasters") then
-    utils.exec_command(create_webmasters, "Created webmasters group", "Error creating webmasters group")
-else
-    utils.log("Group 'webmasters' already exists.")
-end
+-- -- Check if group 'webmasters' exists
+-- if not utils.group_exists("webmasters") then
+--     utils.exec_command(create_webmasters, "Created webmasters group", "Error creating webmasters group")
+-- else
+--     utils.log("Group 'webmasters' already exists.")
+-- end
 
--- Check if the current user is in the 'webmasters' group
-if not utils.user_in_group(os.getenv("USER"), "webmasters") then
-    utils.exec_command(add_current_user_to_webmasters, "Added current user to webmasters group", "Error adding current user to webmasters group")
-else
-    utils.log("Current user is already in 'webmasters' group.")
-end
+-- -- Check if the current user is in the 'webmasters' group
+-- if not utils.user_in_group(os.getenv("USER"), "webmasters") then
+--     utils.exec_command(add_current_user_to_webmasters, "Added current user to webmasters group", "Error adding current user to webmasters group")
+-- else
+--     utils.log("Current user is already in 'webmasters' group.")
+-- end
 
--- Check if 'www-data' user is in the 'webmasters' group
-if not utils.user_in_group("www-data", "webmasters") then
-    utils.exec_command(add_www_data_to_webmasters, "Added www-data to webmasters group", "Error adding www-data to webmasters group")
-else
-    utils.log("'www-data' is already in 'webmasters' group.")
-end
+-- -- Check if 'www-data' user is in the 'webmasters' group
+-- if not utils.user_in_group("www-data", "webmasters") then
+--     utils.exec_command(add_www_data_to_webmasters, "Added www-data to webmasters group", "Error adding www-data to webmasters group")
+-- else
+--     utils.log("'www-data' is already in 'webmasters' group.")
+-- end
 
 
 -- Command Line Arguments ---------------------------------------------------------------------
@@ -54,14 +51,7 @@ end
 -- Initialize the project name from the command-line argument
 local project_name = arg[1]
 
--- Initialize globals
-if project_name == 'html' then
-    globals = html.init(script_path)
-    new_apache_wordpress = require("html.apache_wordpress")
-else
-    globals = child.init(project_name, script_path)
-    new_apache_wordpress = require("models.apache_wordpress")
-end
+globals = child.init(project_name, script_path)
 
 -- Handle verbose mode
 local verbose = false
