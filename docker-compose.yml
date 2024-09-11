@@ -8,14 +8,13 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /home/datakiin/wp-gen/wp-gen/config/wp-gen.cnf:/root/.my.cnf
-      - /home/datakiin/wp-gen/wp-gen:/wp-gen
-      - /etc/hosts:/etc/hosts
-      - /etc/wordpress:/etc/wordpress
-      - /var/www:/var/www
-      - /var/lib/projects:/var/lib/projects
-      - /etc/apache2/sites-available:/etc/apache2/sites-available
-      - /etc/wp-gen:/etc/wp-gen
+      - /home/datakiin/wp-gen/source/wp-gen.cnf:/root/.my.cnf
+      - /home/datakiin/wp-gen/source/wp-gen:/wp-gen
+      - /home/datakiin/wp-gen/source/hosts:/etc/hosts
+      - /home/datakiin/wp-gen/source/wordpress:/etc/wordpress
+      - /home/datakiin/wp-gen/source/var-www-html:/var/www/html
+      - /home/datakiin/wp-gen/source/var-lib-projects:/var/lib/projects
+      - /home/datakiin/wp-gen/source/apache2-sites-available:/etc/apache2/sites-available
     networks:
       - wp-network
     depends_on:
