@@ -34,7 +34,7 @@ CustomLog ${APACHE_LOG_DIR}/access.log combined
     utils.create_file(apache_content, apache_config)
     -- Enable the site and reload Apache
     local enableSiteCommand = string.format("a2ensite %s.conf", project_name)
-    local reloadApacheCommand = "systemctl reload apache2"
+    local reloadApacheCommand = "service apache2 reload"
     utils.exec_command(enableSiteCommand, nil, 'Error: enableSiteCommand')
     utils.exec_command(reloadApacheCommand, nil, 'Error: reloadApacheCommand')
 
