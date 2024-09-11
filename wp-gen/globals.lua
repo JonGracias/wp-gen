@@ -1,6 +1,5 @@
 local globals = {}
 
-
 local function format_db_name(project_name)
     -- Remove non-alphanumeric characters and convert to lowercase
     local formatted_name = project_name:gsub("%W", ""):lower()

@@ -1,57 +1,54 @@
-# Use an official Ubuntu base image
-FROM ubuntu:22.04
+# Start from the official WordPress image
+FROM wordpress:latest
 
-# Set non-interactive mode for apt to prevent prompts
-ENV DEBIAN_FRONTEND=noninteractive
+# Install dependencies for PHP extensions and other required packages
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    libxpm-dev \
+    libzip-dev \
+    libicu-dev \
+    libmagickwand-dev \
+    php-cli \
+    php-curl \
+    php-json \
+    php-mbstring \
+    php-xml \
+    php-zip \
+    python3-pip \
+    wget \
+    curl \
+    lua5.4 \
+    iputils-ping \
+    --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-# Update the package list and install required packages
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-curl php-json php-mbstring php-xml php-zip \
-    python3-pip wget curl lua5.4 sudo nano
+# Configure and install the gd extension
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg \
+    --with-webp && \
+    docker-php-ext-install gd
 
-# Create the non-root user and add it to the webmasters group
-RUN groupadd -r webmasters && \
-    groupadd -r datakiin && \
-    useradd -r -g datakiin -G webmasters datakiin && \
-    echo 'datakiin ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-    
-# Ensure /var/lib/projects/html and /var/www/html directories exist and have the correct permissions
-RUN mkdir -p /home/datakiin/ && \
-    mkdir -p /home/datakiin/wp-gen/ && \
-    chown -R www-data:webmasters /home/datakiin /home/datakiin/wp-gen && \
-    chmod -R 755 /home/datakiin/ /home/datakiin/wp-gen
+# Install the intl extension
+RUN docker-php-ext-install intl
 
-# Ensure /var/lib/projects/html and /var/www/html directories exist and have the correct permissions
-RUN mkdir -p /var/lib/projects/html && \
-    mkdir -p /var/www/html && \
-    chown -R www-data:webmasters /var/lib/projects/html /var/www/html && \
-    chmod -R 755 /var/lib/projects/html /var/www/html
-
-# Set permissions for wp-config.php
-RUN touch /var/www/html/wp-config.php && \
-    chown www-data:webmasters /var/www/html/wp-config.php && \
-    chmod 755 /var/www/html/wp-config.php
-
-# Ensure permissions for Apache config files
-RUN touch /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf && \
-    chown root:root /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf && \
-    chmod 644 /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
+# Install imagick via PECL and enable it
+RUN pecl install imagick && docker-php-ext-enable imagick
 
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
 
 # Set the ServerName globally to suppress the warning
-RUN echo "ServerName datakiin" | sudo tee /etc/apache2/conf-available/servername.conf && \
-    sudo a2enconf servername
+RUN echo "ServerName Apache2_Wordpress" | tee /etc/apache2/conf-available/servername.conf && \
+    a2enconf servername
 
-# Enable Apache modules for SSL and PHP
-RUN sudo a2enmod ssl && sudo a2enmod php8.1 && sudo a2enmod rewrite
+# Enable the rewrite Apache module
+RUN a2enmod rewrite
 
-# Expose port 80 for HTTP and 443 for HTTPS
+# Expose ports 80 (HTTP) and 443 (HTTPS)
 EXPOSE 80 443
 
-# Start MySQL and Apache services using apachectl
-CMD ["apachectl", "-D", "FOREGROUND"]
-
-    
-    
+# Use the default command to run Apache in the foreground
+CMD ["apache2-foreground"]
