@@ -12,8 +12,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update the package list and install required packages
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y apache2 \
+    mysql-server \
     php \
     libapache2-mod-php \
+    php-pear \
+    php-dev \
     php-mysql \
     php-cli \
     php-curl \
@@ -26,10 +29,14 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-pip \
     wget \
     lua5.4 \
-    iputils-ping \Z
-    imagemagick \
+    iputils-ping \
+    libmagickwand-dev \
     --no-install-recommends && \
-    rm -r /var/lib/apt/lists/*
+    pecl install imagick && \
+    echo "extension=imagick.so" > /etc/php/8.1/cli/conf.d/20-imagick.ini && \
+    echo "extension=imagick.so" > /etc/php/8.1/apache2/conf.d/20-imagick.ini && \
+    rm -rf /var/lib/apt/lists/*
+
 
 
 

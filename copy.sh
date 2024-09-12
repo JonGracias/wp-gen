@@ -13,9 +13,9 @@ cp -r /home/datakiin/wp-gen/wp-gen /home/datakiin/wp-gen/source/
 # hosts
 cp -r /etc/hosts /home/datakiin/wp-gen/source/
 # wordpress config files
-cp -r /etc/wordpress/config-localhost.php /home/datakiin/wp-gen/source/
+cp -r /etc/wordpress /home/datakiin/wp-gen/source/
 # wordpress
-cp -r /var/www/html/* /home/datakiin/wp-gen/source/wordpress
+cp -r /var/www/html /home/datakiin/wp-gen/source
 # projects
 cp -r /var/lib/projects /home/datakiin/wp-gen/source/
 # apcache2 sites available
