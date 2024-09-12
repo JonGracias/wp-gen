@@ -1,0 +1,25 @@
+# Ignore all .log files
+*.log
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore all .DS_Store files (macOS-specific)
+.DS_Store
+
+# Ignore all files in the temp directory
+temp/
+
+# Ignore compiled Python files
+*.pyc 
+
+# Ignore environment variables file
+.env
+
+# Ignore all files in the build folder
+build/
+
+# Ignore 
+old_source/
+
+source/wordpress/

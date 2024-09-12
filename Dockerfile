@@ -4,11 +4,17 @@ FROM ubuntu:22.04
 # Set non-interactive mode for apt to prevent prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
+# # Update the package list and install required packages
+# RUN apt-get update && apt-get upgrade -y && \
+#     apt-get install -y apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-curl php-json php-mbstring php-xml php-zip \
+#     python3-pip wget curl lua5.4 sudo nano
+
 # Update the package list and install required packages
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y apache2 \
     php \
     libapache2-mod-php \
+    php-mysql \
     php-cli \
     php-curl \
     php-json \
@@ -19,21 +25,20 @@ RUN apt-get update && apt-get upgrade -y && \
     php-intl \
     python3-pip \
     wget \
-    curl \
     lua5.4 \
-    iputils-ping \
-    unzip \
+    iputils-ping \Z
     imagemagick \
-    openssl \
     --no-install-recommends && \
     rm -r /var/lib/apt/lists/*
 
-# Generate SSL certificate and key
-RUN mkdir -p /etc/ssl/certs /etc/ssl/private && \
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /etc/ssl/private/apache-selfsigned.key \
-    -out /etc/ssl/certs/apache-selfsigned.crt \
-    -subj "/C=US/ST=Maryland/L=Frederick/O=Datakiin/OU=Online/CN=localhost"
+
+
+# # Generate SSL certificate and key
+# RUN mkdir -p /etc/ssl/certs /etc/ssl/private && \
+#     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+#     -keyout /etc/ssl/private/apache-selfsigned.key \
+#     -out /etc/ssl/certs/apache-selfsigned.crt \
+#     -subj "/C=US/ST=Maryland/L=Frederick/O=Datakiin/OU=Online/CN=localhost"
 
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
@@ -41,11 +46,13 @@ RUN mkdir /etc/wordpress
 # Set the ServerName globally to suppress the warning
 RUN echo "ServerName datakiin" | tee /etc/apache2/conf-available/servername.conf && \
     a2enconf servername
-# Enable Apache modules for SSL, PHP, and rewrite
-RUN a2enmod ssl && a2enmod php8.1 && a2enmod rewrite
 
-# Enable the default SSL site
-RUN a2ensite default-ssl
+# Enable Apache modules for SSL, PHP, and rewrite
+# RUN a2enmod ssl
+RUN a2enmod php8.1 && a2enmod rewrite
+
+# # Enable the default SSL site
+# RUN a2ensite default-ssl
 
 
 # Expose port 80 for HTTP and 443 for HTTPS
