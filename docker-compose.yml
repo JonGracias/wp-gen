@@ -12,9 +12,11 @@ services:
       - /home/datakiin/wp-gen/source/wp-gen:/wp-gen
       - /home/datakiin/wp-gen/source/hosts:/etc/hosts
       - /home/datakiin/wp-gen/source/wordpress:/etc/wordpress
-      - /home/datakiin/wp-gen/source/var-www-html/wp-config.php:/var/www/html/wp-config.php
-      - /home/datakiin/wp-gen/source/var-lib-projects:/var/lib/projects
+      - /home/datakiin/wp-gen/source/var-www-html:/var/www/html
+      - /home/datakiin/wp-gen/source/var-lib-projects:/var/lib/projects/html
       - /home/datakiin/wp-gen/source/apache2-sites-available:/etc/apache2/sites-available
+      - /home/datakiin/wp-gen/source/ssl/apache-selfsigned.crt:/etc/ssl/certs/apache-selfsigned.crt
+      - /home/datakiin/wp-gen/source/ssl/apache-selfsigned.key:/etc/ssl/private/apache-selfsigned.key    
     networks:
       - wp-network
     depends_on:

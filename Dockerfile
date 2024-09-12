@@ -1,55 +1,55 @@
-# Start from the official WordPress image
-FROM wordpr
-ess:latest
+# Use an official Ubuntu base image
+FROM ubuntu:22.04
 
-# Install dependencies for PHP extensions and other required packages
-RUN apt-get update && apt-get install -y \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libwebp-dev \
-    libxpm-dev \
-    libzip-dev \
-    libicu-dev \
-    libmagickwand-dev \
+# Set non-interactive mode for apt to prevent prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update the package list and install required packages
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y apache2 \
+    php \
+    libapache2-mod-php \
     php-cli \
     php-curl \
     php-json \
     php-mbstring \
     php-xml \
     php-zip \
+    php-gd \
+    php-intl \
     python3-pip \
     wget \
     curl \
     lua5.4 \
     iputils-ping \
-    --no-install-recommends && rm -r /var/lib/apt/lists/*
+    unzip \
+    imagemagick \
+    openssl \
+    --no-install-recommends && \
+    rm -r /var/lib/apt/lists/*
 
-# Configure and install the gd extension
-RUN docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
-    --with-webp && \
-    docker-php-ext-install gd
-
-# Install the intl extension
-RUN docker-php-ext-install intl
-
-# Install imagick via PECL and enable it
-RUN pecl install imagick && docker-php-ext-enable imagick
+# Generate SSL certificate and key
+RUN mkdir -p /etc/ssl/certs /etc/ssl/private && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/ssl/private/apache-selfsigned.key \
+    -out /etc/ssl/certs/apache-selfsigned.crt \
+    -subj "/C=US/ST=Maryland/L=Frederick/O=Datakiin/OU=Online/CN=localhost"
 
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
 
 # Set the ServerName globally to suppress the warning
-RUN echo "ServerName Apache2_Wordpress" | tee /etc/apache2/conf-available/servername.conf && \
+RUN echo "ServerName datakiin" | tee /etc/apache2/conf-available/servername.conf && \
     a2enconf servername
+# Enable Apache modules for SSL, PHP, and rewrite
+RUN a2enmod ssl && a2enmod php8.1 && a2enmod rewrite
 
-# Enable the rewrite Apache module
-RUN a2enmod rewrite
+# Enable the default SSL site
+RUN a2ensite default-ssl
 
-# Expose ports 80 (HTTP) and 443 (HTTPS)
+
+# Expose port 80 for HTTP and 443 for HTTPS
 EXPOSE 80 443
 
-# Use the default command to run Apache in the foreground
-CMD ["apache2-foreground"]
+# Start Apache in the foreground
+CMD ["apachectl", "-D", "FOREGROUND"]
