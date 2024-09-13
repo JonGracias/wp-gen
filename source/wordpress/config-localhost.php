@@ -9,6 +9,6 @@ define('WP_AUTO_UPDATE_CORE', true);
 define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', false);
 define('WP_DEBUG_DISPLAY', false);
-define('WP_HOME', 'http://datakiin');
-define('WP_SITEURL', 'http://datakiin');
+define('WP_HOME', 'https://datakiin');
+define('WP_SITEURL', 'https://datakiin');
 ?>

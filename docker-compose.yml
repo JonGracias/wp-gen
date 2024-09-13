@@ -9,14 +9,12 @@ services:
       - "443:443"
     volumes:
       - /home/datakiin/wp-gen/source/wp-gen.cnf:/root/.my.cnf
-      - /home/datakiin/wp-gen/source/wp-gen:/wp-gen
+      - /home/datakiin/wp-gen/source/app:/app
       - /home/datakiin/wp-gen/source/hosts:/etc/hosts
       - /home/datakiin/wp-gen/source/wordpress:/etc/wordpress
       - /home/datakiin/wp-gen/source/html:/var/www/html
       - /home/datakiin/wp-gen/source/projects:/var/lib/projects
-      - /home/datakiin/wp-gen/source/sites-available:/etc/apache2/sites-available
-      # - /home/datakiin/wp-gen/source/ssl/apache-selfsigned.crt:/etc/ssl/certs/apache-selfsigned.crt
-      # - /home/datakiin/wp-gen/source/ssl/apache-selfsigned.key:/etc/ssl/private/apache-selfsigned.key    
+      - /home/datakiin/wp-gen/source/sites-available:/etc/apache2/sites-available 
     networks:
       - wp-network
     depends_on:
@@ -33,7 +31,6 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./html_database_dump.sql:/docker-entrypoint-initdb.d/html_database_dump.sql
-      - ./create_user.sql:/docker-entrypoint-initdb.d/create_user.sql
     networks:
       - wp-network
 
