@@ -15,6 +15,8 @@ services:
       - /home/datakiin/wp-gen/source/html:/var/www/html
       - /home/datakiin/wp-gen/source/projects:/var/lib/projects
       - /home/datakiin/wp-gen/source/sites-available:/etc/apache2/sites-available 
+      - /etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
+      - /etc/ssl/private/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
     networks:
       - wp-network
     depends_on:
@@ -39,6 +41,7 @@ services:
     container_name: wordpress_phpmyadmin
     environment:
       PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: password
     ports:
       - "8080:80"
     networks:
