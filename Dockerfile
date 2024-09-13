@@ -36,7 +36,7 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN mkdir /etc/wordpress
 
 # Set the ServerName globally to suppress the warning
-RUN echo "ServerName Wordpress Generator" | tee /etc/apache2/conf-available/servername.conf && \
+RUN echo "ServerName Wordpress_Generator" | tee /etc/apache2/conf-available/servername.conf && \
     a2enconf servername
 
 # Enable Apache modules for SSL, PHP, and rewrite
