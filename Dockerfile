@@ -28,17 +28,15 @@ RUN apt-get update && apt-get upgrade -y && \
     libmagickwand-dev \
     php-imagick \
     ssl-cert \
+    sudo \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
-
-# Create a user 'datakiin' and grant access only to /app
-RUN useradd -m -d /home/datakiin datakiin 
 
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
 
 # Set the ServerName globally to suppress the warning
-RUN echo "ServerName datakiin" | tee /etc/apache2/conf-available/servername.conf && \
+RUN echo "ServerName Wordpress Generator" | tee /etc/apache2/conf-available/servername.conf && \
     a2enconf servername
 
 # Enable Apache modules for SSL, PHP, and rewrite
@@ -46,7 +44,6 @@ RUN a2enmod php8.1 && a2enmod rewrite ssl
 
 # Enable the default SSL site
 RUN a2ensite default-ssl
-
 
 # Expose port 80 for HTTP and 443 for HTTPS
 EXPOSE 80 443

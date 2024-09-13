@@ -1,3 +1,7 @@
+
+
+
+
 local commands = {
     -- -- Stop Docker Compose and remove all containers
     "sudo docker-compose down",
