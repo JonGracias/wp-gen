@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Database Existence</title>
+</head>
+<body>
+
+<h2>Check if Database Exists</h2>
+
+<!-- Simple Form for Database Name Input -->
+<form id="dbForm">
+    <label for="db_name">Database Name:</label>
+    <input type="text" id="db_name" name="db_name" required><br><br>
+
+    <button type="submit">Check Database</button>
+</form>
+
+<!-- Display Server Response -->
+<div id="response"></div>
+
+<script>
+    document.getElementById('dbForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Get the database name input value
+        const dbName = document.getElementById('db_name').value;
+
+        // Construct JSON data with the database name
+        const jsonData = {
+            db_name: dbName
+        };
+
+        // Send JSON data via POST request to the PHP script
+        fetch('https://datakiin/lua/database/db_comm.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Display the server's response
+            document.getElementById('response').innerText = data;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

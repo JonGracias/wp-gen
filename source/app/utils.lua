@@ -11,6 +11,10 @@ M.project = "project"
 function M.set_verbose(flag)
     M.verbose = flag
 end
+-- Function to set verbosity
+function M.set_project(name)
+    M.project = name
+end
 
 local function escape_sql_input(input)
     -- Escape dangerous characters in the input
@@ -19,18 +23,34 @@ end
 
 -- Function to log messages
 function M.log(message, print_message)
-    local file = "/etc/wp-gen/" .. M.project .. ".log"
-    local log_file = io.open(file, "a")
+    -- Ensure M.project is set
+    if not M.project then
+        error("M.project is nil. Please set the project name before logging.")
+    end
+
+    -- Construct the log file path
+    local file = "./app/" .. M.project .. ".log"
+
+    -- Try to open the log file for appending
+    local log_file, err = io.open(file, "a")
+    if not log_file then
+        error("Error opening log file: " .. err)
+    end
+
+    -- Write the log message to the file
     log_file:write(message .. "\n")
     log_file:close()
+
+    -- Optionally print the message
     if M.verbose or print_message then
         print(message)
     end
 end
 
+
 -- Function to log errors
 function M.log_error(message)
-    local file = "/etc/wp-gen/" .. M.project .. ".error"
+    local file = "./app/" .. M.project .. ".error"
     -- Log to the error file
     local error_file = io.open(file, "a")
     error_file:write("ERROR: " .. message .. "\n")
@@ -66,20 +86,22 @@ function M.exec_command(command, success_msg, error_msg)
     local handle = io.popen(command)
     local result = handle:read("*a"):gsub("\n", " "):gsub("%s+", " "):sub(1, 200)
     local exec_success, _, code = handle:close()
+    local m_success = "success"
+    local m_error = "error"
 
     
-    if success_msg == nil then 
-        success_msg = result
+    if success_msg ~= nil then 
+        m_success = success_msg
     end
-    if error_msg == nil then
-        error_msg = result
+    if error_msg ~= nil then
+        m_error = error_msg
     end
     
     if exec_success or code == 0 then
-        M.log(success_msg)
+        M.log(m_success, false)
     else
-        local formatted_error_msg = string.format("%s\nCommand: %s\nExit code: %s\nOutput: %s", error_msg, command, code or "N/A", result)
-        M.log_error(formatted_error_msg)
+        local formatted_error_msg = string.format("%s\nCommand: %s\nExit code: %s\nOutput: %s", m_error, command, code or "N/A", result or "N/A")
+        M.log_error(formatted_error_msg, true)
     end
 end
 
@@ -158,16 +180,6 @@ function M.delete_directories_and_files(paths_to_remove)
         local error = string.format("Error removing %s: ", path)
         M.exec_command(command, success, error)
     end
-end
-
--------- database -------------------------------------
--- Function to check if the database exists using MySQL command
-function M.database_exists(db_name)
-    local check_command = string.format("mysql --silent --skip-column-names -e 'SHOW DATABASES LIKE \"%s\";'", db_name)
-    local handle = io.popen(check_command)
-    local result = handle:read("*a")
-    handle:close()
-    return result ~= ""
 end
 
 -- TIME TO HANDLE SQL INJECTIONS!!!! THEN FIX ALL UTILS.EXEC_COMMANDS AND REMOVE ANY CALLS TO VALIDATE

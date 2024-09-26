@@ -10,13 +10,16 @@ services:
     volumes:
       - /home/datakiin/wp-gen/source/wp-gen.cnf:/root/.my.cnf
       - /home/datakiin/wp-gen/source/app:/app
+      - /home/datakiin/wp-gen/littleshop:/littleshop.local
       - /home/datakiin/wp-gen/source/hosts:/etc/hosts
       - /home/datakiin/wp-gen/source/wordpress:/etc/wordpress
       - /home/datakiin/wp-gen/source/html:/var/www/html
       - /home/datakiin/wp-gen/source/projects:/var/lib/projects
       - /home/datakiin/wp-gen/source/sites-available:/etc/apache2/sites-available 
+      - /home/datakiin/wp-gen/source/edit_sudoers.sh:/usr/local/bin/edit_sudoers.sh
       - /etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
       - /etc/ssl/private/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
+      - /etc/apache2/apache2.conf:/etc/apache2/apache2.conf
     networks:
       - wp-network
     depends_on:
@@ -29,7 +32,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: html
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./html_database_dump.sql:/docker-entrypoint-initdb.d/html_database_dump.sql

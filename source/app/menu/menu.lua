@@ -2,7 +2,7 @@
 
 -- Require the menu options
 local backup = require("menu.menu_options.backup")
-local reset_password = require("menu.menu_options.reset_password")
+local reset_password = require("menu.menu_options.reset_password") -- redo in php
 local purge = require("menu.menu_options.purge")
 local restore = require("menu.menu_options.restore")
 local clone = require("menu.menu_options.clone")
@@ -40,16 +40,11 @@ function M.options(option, globals)
         if success then
             utils.log("Cloning completed.", true)
         end
-
-    elseif option == "reset_password" then
-        utils.log("Reseting password for " .. project_name, true)
-        local reset_password_success, wp_user = reset_password.start(globals)
-        if reset_password_success then
-            utils.log("Password updated successfully for user" .. wp_user, true)
-        end
     else
         utils.log("Invalid option. Please provide a valid option: backup, restore, purge, clone, or reset_password.")
     end
 end
+
+
 
 return M

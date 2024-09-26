@@ -1,26 +1,6 @@
 local M = {}
 local utils = require("utils")
 
--- Function to duplicate the database
-local function duplicate_database(title, old_db_name, new_db_name)
-    -- Create the new database
-    utils.create_database(new_db_name)
-
-    -- Copy old database into new database
-    local duplicate_db_command = string.format(
-        "mysqldump  %s | mysql  %s",
-         old_db_name,  new_db_name
-    )
-    utils.exec_command(duplicate_db_command, nil, 'Error: duplicate_database(title, old_db_name, new_db_name)')
-
-    -- Update the site title in the new database
-    local update_title_command = string.format(
-        "mysql -e \"UPDATE wp_options SET option_value = '%s' WHERE option_name = 'blogname';\" %s",
-        title, new_db_name
-    )
-    utils.exec_command(update_title_command, nil, 'Error: duplicate_database(title, old_db_name, new_db_name)')
-end
-
 -- Function to duplicate the WordPress files
 local function duplicate_files(paths, old_project_name, new_project_name)
     for _, path in pairs(paths) do
@@ -38,13 +18,9 @@ function M.start(globals)
     }
 
     io.write("Enter the new project name: ")
-    local new_project_name = io.read()
-    local new_db_name = utils.format_db_name(new_project_name)    
+    local new_project_name = io.read()  
 
     ---------- Duplication -----------------------
-    -- Duplicate the database
-    utils.log("duplicating database")
-    local success = duplicate_database(new_project_name, globals.db_name, new_db_name)
     
     -- Duplicate the WordPress files
     utils.log("duplicate WordPress files")

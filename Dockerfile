@@ -29,14 +29,22 @@ RUN apt-get update && apt-get upgrade -y && \
     php-imagick \
     ssl-cert \
     libapache2-mod-fcgid \
+    sudo \
+    nano \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
 
+# Ensure the script has executable permissions
+# RUN chmod +x /usr/local/bin/edit_sudoers.sh
+
+# Run the script
+# RUN /usr/local/bin/edit_sudoers.sh
+
 # Set the ServerName globally to suppress the warning
-RUN echo "ServerName Wordpress_Generator" | tee /etc/apache2/conf-available/servername.conf && \
+RUN echo "ServerName datakiin" | tee /etc/apache2/conf-available/servername.conf && \
     a2enconf servername
 
 # Enable Apache modules for SSL, PHP, and rewrite
@@ -45,8 +53,10 @@ RUN a2enmod php8.1 && a2enmod \
     ssl \
     proxy \
     proxy_http \
-    fcgid \
-    actions
+    actions \
+    cgid \
+    lua
+
 
 # Enable the default SSL site
 RUN a2ensite default-ssl

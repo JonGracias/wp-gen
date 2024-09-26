@@ -19,8 +19,7 @@ function globals.init(project_name, script_path)
     -- It is neccessary to specify a host for phpmyadmin login
     globals.db_user = "root"
     globals.db_password = "password" 
-    globals.db_host = "mysql"
-    globals.db_conn = string.format("mysql -h %s -u %s -p%s", db_host, db_user, db_password)
+    globals.db_host = "wordpress_db"
 
     -- Define paths
     globals.wp_base = string.format("/var/www/%s", project_name)
@@ -34,7 +33,6 @@ function globals.init(project_name, script_path)
     globals.timestamp = os.date("%Y_%m_%d_%I:%M%p")
     globals.date_dir = globals.backup_dir .. globals.timestamp .. "/"
     globals.files_backup_dir = globals.date_dir .. "_files_backup.tar.gz"
-    globals.db_backup_file = globals.date_dir .. "_backup.sql"
 
     return globals
 end
