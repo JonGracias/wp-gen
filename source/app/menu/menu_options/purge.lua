@@ -1,6 +1,6 @@
 local M = {}
-
 local utils = require("utils")
+
 function M.start(globals)
     local project_name = globals.project_name
     local db_creds = globals.db_creds

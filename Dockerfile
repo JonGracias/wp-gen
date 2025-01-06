@@ -37,11 +37,10 @@ RUN apt-get update && apt-get upgrade -y && \
 # Ensure /etc/wordpress exists
 RUN mkdir /etc/wordpress
 
-# Ensure the script has executable permissions
-# RUN chmod +x /usr/local/bin/edit_sudoers.sh
+# Add the sudoers rule for www-data and set correct permissions
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/lua /app/main.lua *' > /etc/sudoers.d/custom-script && \
+    chmod 440 /etc/sudoers.d/custom-script
 
-# Run the script
-# RUN /usr/local/bin/edit_sudoers.sh
 
 # Set the ServerName globally to suppress the warning
 RUN echo "ServerName datakiin" | tee /etc/apache2/conf-available/servername.conf && \
@@ -57,12 +56,18 @@ RUN a2enmod php8.1 && a2enmod \
     cgid \
     lua
 
+# Create an nessecary .conf files
+RUN touch /etc/apache2/sites-available/littleshop.local.conf
 
 # Enable the default SSL site
-RUN a2ensite default-ssl
+RUN a2ensite default-ssl 
+
+# Enable nessecary .conf files
+RUN a2ensite littleshop.local
 
 # Expose port 80 for HTTP and 443 for HTTPS
 EXPOSE 80 443
 
 # Start Apache in the foreground
 CMD ["apachectl", "-D", "FOREGROUND"]
+

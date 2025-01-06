@@ -29,7 +29,7 @@ function M.log(message, print_message)
     end
 
     -- Construct the log file path
-    local file = "./app/" .. M.project .. ".log"
+    local file = "./app/.logs/" .. M.project .. ".log"
 
     -- Try to open the log file for appending
     local log_file, err = io.open(file, "a")
@@ -50,7 +50,7 @@ end
 
 -- Function to log errors
 function M.log_error(message)
-    local file = "./app/" .. M.project .. ".error"
+    local file = "./app/.logs/" .. M.project .. ".error"
     -- Log to the error file
     local error_file = io.open(file, "a")
     error_file:write("ERROR: " .. message .. "\n")

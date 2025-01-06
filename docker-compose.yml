@@ -36,6 +36,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./html_database_dump.sql:/docker-entrypoint-initdb.d/html_database_dump.sql
+      - /home/datakiin/wp-gen/littleshop/littleshop.local/config/schemas/SQL-Script-LSOHS.sql:/docker-entrypoint-initdb.d/SQL-Script-LSOHS.sql
     networks:
       - wp-network
 

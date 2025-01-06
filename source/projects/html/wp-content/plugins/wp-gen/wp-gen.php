@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WordPress Generator    
-Plugin URI:  http://datakiin.com/wp-gen
+Plugin URI:  http://datakiin.test/wp-gen
 Description: A basic plugin example with a shortcode.
 Version:     1.0
 Author:      Jonatan Gracias
-Author URI:  http://datakiin.com
+Author URI:  http://datakiin.test
 License:     GPL2
 */
 

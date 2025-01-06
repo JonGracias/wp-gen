@@ -1,5 +1,4 @@
-127.0.0.1 datakiin
-127.0.1.1 littleshop
+127.0.0.1 datakiin.test
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     ip6-localhost ip6-loopback

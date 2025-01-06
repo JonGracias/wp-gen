@@ -11,7 +11,7 @@ end
 function globals.init(project_name, script_path)
     globals.project_name = project_name
     globals.db_name = format_db_name(project_name)
-    globals.base_url = 'http://localhost'
+    globals.base_url = 'http://datakiin'
     globals.site_url = string.format("%s/%s", globals.base_url, project_name)
     globals.creator_dir = script_path
     

@@ -1,0 +1,24 @@
+ERROR: Error: purge.lua
+Command: mysql nil -e "DROP DATABASE IF EXISTS nil"
+Exit code: 1
+Output: 
+ERROR: Error: purge.lua
+Command: mysql nil -e "DROP DATABASE IF EXISTS nil"
+Exit code: 1
+Output: 
+ERROR: Error: purge.lua
+Command: mysql nil -e "DROP DATABASE IF EXISTS nil"
+Exit code: 1
+Output: 
+ERROR: Error: purge.lua
+Command: mysql nil -e "DROP DATABASE IF EXISTS nil"
+Exit code: 1
+Output: 
+ERROR: test1 has a problem: 
+Command: mysql -h wordpress_db -P 3307 -u root -p'password' -e "CREATE DATABASE IF NOT EXISTS test1"
+Exit code: 1
+Output: 
+ERROR: test1 has a problem: 
+Command: mysql -h wordpress_db -P 3307 -u root -p'password' -e "CREATE DATABASE IF NOT EXISTS test1"
+Exit code: 1
+Output: 

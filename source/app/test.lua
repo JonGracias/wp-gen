@@ -1,4 +1,4 @@
-print ("Content-type: text/html\n")
+print("Content-type: text/html\n")
 print("Cache-control: no-cache")
 print("Pragma: no-cache")
 

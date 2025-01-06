@@ -8,6 +8,13 @@ Author URI: http://rizzlestudios.ath.cx/
 Tags: white, two-column, one-column, minimalist, widgets, widgetized
 Licensed under GPL. 
 */
+
+/* * {
+    border: 1px solid #0026ff; 
+    box-sizing: border-box; 
+} */
+
+
 body 
 {
 	margin: 0;
@@ -126,6 +133,66 @@ cite
         border-right: solid #dde0e1 2px;
         border-bottom: solid #dde0e1 2px;
 }
+
+#home-banner {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Vertically align items */
+    background-color: #f3f3f3; /* Optional: Add background for clarity */
+    padding: 20px;
+}
+
+#profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px; /* Add space between the image and the text */
+    border: 3px solid #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#home-banner-content {
+    max-width: 600px; /* Limit text width for better readability */
+}
+
+#home-banner h1 {
+    font-family: Verdana, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 36px;
+    text-transform: lowercase;
+    color: #333333;
+    letter-spacing: -1px;
+    margin: 0 0 10px; /* Add space below the heading */
+}
+
+#home-banner p {
+    font-family: Verdana, Arial, Sans-Serif;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 1.5em;
+    color: #555555;
+    margin: 0;
+}
+
+
+
+#home-content-wrapper
+{
+	width: 100%;
+	float: left;
+}
+
+#separator {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+	background-color: #282d2d;
+	color: #E6E4E4;
+}
+
+
+
 
 #content-wrapper
 {
@@ -518,8 +585,6 @@ h3.post-title a:hover {
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 	}
-
-/
 
 /* Images */
 .aligncenter,

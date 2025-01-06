@@ -3,11 +3,19 @@ local M = {}
 function M.start(globals)
     -- Load additional modules
     local wp_base = globals.wp_base
+    local configure_database = require("models.database")
     local configure_wordpress = require("models.configure_wordpress")
     local configure_apache = require("models.configure_apache")
     local download_wordpress = require("models.download_wordpress")
     local utils = require("utils")
     local success = false
+
+    -- Configure database
+    utils.log("Setting up database...", true)
+    success = configure_database.setupDatabase(globals)
+    if success then
+        utils.log("Database setup completed.", true)
+    end
 
     -- Download and install WordPress
     utils.log("Downloading and installing WordPress...", true)

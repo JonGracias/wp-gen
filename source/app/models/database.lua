@@ -6,7 +6,7 @@ local utils = require("utils")
 -- Function to create a new database
 function db.create_database(db_name)
     local command = string.format(
-        "mysql -h wordpress_db -P 3307 -u root -p'password' -e \"CREATE DATABASE IF NOT EXISTS %s\"",
+        "mysql -u root -p'password' -e \"CREATE DATABASE IF NOT EXISTS %s\"",
         db_name
     )
     local success = string.format("%s database is ready",db_name)
@@ -67,19 +67,12 @@ local function backup_database(globals)
 end
 -------- database -------------------------------------
 -- Function to check if the database exists using MySQL command
-function M.database_exists(db_name)
+function db.database_exists(db_name)
     local check_command = string.format("mysql --silent --skip-column-names -e 'SHOW DATABASES LIKE \"%s\";'", db_name)
     local handle = io.popen(check_command)
     local result = handle:read("*a")
     handle:close()
     return result ~= ""
-end
-
--- Setup database
-utils.log("Setting up database...", true)
-success = setup_database.setupDatabase(globals)
-if success then
-    utils.log("Database setup completed.", true)
 end
 
 function db.setupDatabase(globals)
@@ -123,14 +116,5 @@ local function duplicate_database(title, old_db_name, new_db_name)
     )
     utils.exec_command(update_title_command, nil, 'Error: duplicate_database(title, old_db_name, new_db_name)')
 end
-
-    -- Delete db if exists
-    utils.log("Deleting database")
-    local delete_db_command = string.format(
-        "mysql %s -e \"DROP DATABASE IF EXISTS %s\"",
-        db_creds, db_name
-    )
-    -- Deleting database
-    utils.exec_command(delete_db_command, nil, 'Error: purge.lua')
 
 return db
